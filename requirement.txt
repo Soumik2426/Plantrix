@@ -5,10 +5,10 @@ uvicorn[standard]
 python-multipart
 pillow
 numpy
-requests
 pytest
 ipython
 jinja2
 starlette
 torchaudio
 opencv-python
+
