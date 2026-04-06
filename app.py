@@ -2,6 +2,7 @@ import io
 import os
 import random
 import torch
+import boto3
 import torch.nn as nn
 import mysql.connector
 from dotenv import load_dotenv
@@ -65,12 +66,30 @@ db = mysql.connector.connect(
 cursor = db.cursor(dictionary=True)
 
 # =========================
-# MODEL LOADING
+# MODEL LOADING FROM S3 🚀
 # =========================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "Models", "Model1.pth")
+MODEL_LOCAL_PATH = os.path.join(BASE_DIR, "Model2.pth")
 
-checkpoint = torch.load(MODEL_PATH, map_location="cpu")
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_KEY"),
+    region_name=os.getenv("AWS_REGION")
+)
+
+# Download model if not exists
+if not os.path.exists(MODEL_LOCAL_PATH):
+    print("Downloading model from S3...")
+    s3.download_file(
+        os.getenv("AWS_BUCKET_NAME"),
+        os.getenv("MODEL_KEY"),
+        MODEL_LOCAL_PATH
+    )
+    print("Model downloaded!")
+
+# Load model
+checkpoint = torch.load(MODEL_LOCAL_PATH, map_location="cpu")
 class_names = checkpoint["class_names"]
 
 model = models.efficientnet_b0(weights=None)
