@@ -10,6 +10,6 @@ pytest
 ipython
 jinja2
 starlette
-torchaudio
+mysql-connector-python
 opencv-python
 
