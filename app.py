@@ -305,17 +305,31 @@ async def predict(device_id: str = Form(...), file: UploadFile = File(...)):
 
     prediction, confidence = predict_image(image_bytes)
 
-    image_path = os.path.join(IMAGE_DIR, f"{device_id}_{file.filename}")
-    with open(image_path, "wb") as f:
-        f.write(image_bytes)
+    filename = f"{device_id}_{file.filename}"
 
+    # Upload to S3
+    s3.put_object(
+        Bucket=os.getenv("AWS_BUCKET_NAME"),
+        Key=f"images/{filename}",
+        Body=image_bytes,
+        ContentType=file.content_type
+    )
+
+    # Generate URL
+    image_url = f"https://{os.getenv('AWS_BUCKET_NAME')}.s3.{os.getenv('AWS_REGION')}.amazonaws.com/images/{filename}"
+
+    # Save in DB
     cursor.execute(
         "INSERT INTO predictions (device_id,image_url,prediction,confidence) VALUES (%s,%s,%s,%s)",
-        (device_id, image_path, prediction, confidence)
+        (device_id, image_url, prediction, confidence)
     )
     db.commit()
 
-    return {"prediction": prediction, "confidence": f"{confidence:.2f}%"}
+    return {
+        "prediction": prediction,
+        "confidence": f"{confidence:.2f}%",
+        "image_url": image_url
+    }
 
 @app.get("/predictions/{device_id}")
 def get_predictions(device_id: str):
