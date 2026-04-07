@@ -307,12 +307,15 @@ async def predict(device_id: str = Form(...), file: UploadFile = File(...)):
 
     filename = f"{device_id}_{file.filename}"
 
+    # ✅ FIX: Handle missing content type
+    content_type = file.content_type or "image/jpeg"
+
     # Upload to S3
     s3.put_object(
         Bucket=os.getenv("AWS_BUCKET_NAME"),
         Key=f"images/{filename}",
         Body=image_bytes,
-        ContentType=file.content_type
+        ContentType=content_type
     )
 
     # Generate URL
