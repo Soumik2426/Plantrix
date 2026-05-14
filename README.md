@@ -2,6 +2,12 @@
 
 Plantrix is a plant-leaf image classification backend built with FastAPI, PyTorch, MySQL, AWS S3, and Twilio. It supports user signup/login with OTP verification, stores prediction history in a database, uploads submitted images to S3, and serves predictions from a trained EfficientNet model.
 
+Live website: https://plantcare-ai-base.netlify.app/
+
+## Deployment note
+
+The model is hosted on AWS S3 and served through an EC2 instance. The instance is currently turned off to avoid AWS charges on a free account, so live prediction is not available at the moment. To restore prediction, the EC2 instance must be started and the backend on the website must be updated with the instance’s current public IP address.
+
 ## What’s in this project
 
 - `app.py` - FastAPI backend and API routes
