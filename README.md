@@ -78,22 +78,29 @@ pip install -r requirement.txt
 
 3. Create a `.env` file in the project root with the required values.
 
-## Environment variables
+## Environment Variables
+
+Create a `.env` file in the root directory and add the following variables:
 
 ```env
+# Database
 DB_HOST=your_mysql_host
 DB_USER=your_mysql_user
 DB_PASSWORD=your_mysql_password
 DB_NAME=your_mysql_database
 
+# Twilio
 TWILIO_ACCOUNT_SID=your_twilio_account_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE=your_twilio_phone_number
 
+# AWS
 AWS_ACCESS_KEY=your_aws_access_key
 AWS_SECRET_KEY=your_aws_secret_key
 AWS_REGION=your_aws_region
 AWS_BUCKET_NAME=your_s3_bucket_name
+
+# ML Model
 MODEL_KEY=path/to/Model2.pth/in/s3
 ```
 
